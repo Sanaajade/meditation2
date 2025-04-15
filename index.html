@@ -1,35 +1,116 @@
+<link rel="stylesheet" href="https://generativeart.online/css/drawing-app.css">
 
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
 <style> 
   html{
- background-image: url("https://i.pinimg.com/736x/6a/21/ce/6a21ce8e32e9092a923324f0f31fee98.jpg");
+ background-image: url("https://t3.ftcdn.net/jpg/04/99/36/46/360_F_499364641_008vkE13f9Ptk28N14GDXMyMr1dxLxUC.jpg");
   background-size: cover;
    background-attachment: fixed;
     background-position: center;
      background-repeat: no-repeat;
 }
+  
+  canvas {
+      border: 1px solid #333;
+      cursor: crosshair;
+      display: block;
+      margin-top: 10px;
+    }
+  
+  .homelesscat {
+    position: absolute;
+    bottom: 40px;
+    right: 50px
+  }
+  
+  .speechbubble {
+    position: absolute;
+    bottom: 160px;
+    right: 150px
+  }
+  
+  .emoji-picker {
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .emoji-picker span {
+      margin-right: 10px;
+      transition: transform 0.1s;
+    }
+    .emoji-picker span:hover {
+      transform: scale(1.3);
+    }
 </style>
 
 <body>
-<img src="Adobe Express - file (6).png" alt="description of image"width=200 class='homeless cat'>
-</body>
+<img src="Adobe Express - file (6).png" alt="description of image"width=200 class='homelesscat'>
+  
+<img src="Adobe Express - file (7).png" alt="description of image"width=300 class='speechbubble'>
+  
+<div class="house-material">
+  <span>🌸</span>
+  <span>🪨</span>
+  <span>🪵</span>
+  <span>💧</span>
+  </div>
+  
+<canvas id="canvas" width="800" height="600"></canvas>
 
+
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
 <script>
-/* global nn */
-function draw () {    
-  if (nn.mouseDown) {
-    const gif = nn.create('img')
-      .set({ src: 'cd.gif', draggable: false })
-      .css({ position: 'absolute' })
-      .addTo('body')
+ /* global nn */
 
-    gif.css({
-      left: nn.mouseX - gif.width / 2,
-      top: nn.mouseY - gif.height / 2
-    })
+nn.on('mousedown', mousePressed)
+nn.on('mousemove', scatterEmoji)
+nn.on('mouseup', mouseReleased)
+
+    
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const emojis = document.querySelectorAll('.emoji-picker span');
+
+let currentEmoji = null;
+let isDrawing = false;
+  
+emojis.forEach(emoji => {
+  emoji.addEventListener('click', () => {
+    currentEmoji = emoji.textContent;
+    alert(`Now drawing with: ${currentEmoji}`);
+  });
+});
+  
+canvas.addEventListener('mousedown', (e) => {
+  if (currentEmoji) {
+    isDrawing = true;
+    drawEmoji(e);
   }
+});
+  
+  
+canvas.addEventListener('mouseup', () => {
+  isDrawing = false;
+});
+  
+  
+canvas.addEventListener('mousemove', (e) => {
+  if (isDrawing && currentEmoji) {
+    drawEmoji(e);
+  }
+});
+  
+  
+function drawEmoji(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  ctx.fillText(currentEmoji, x, y);
 }
+  
+  
+ctx.font = "32px serif";
+ctx.textBaseline = "middle";
 
-nn.on('mousemove', draw)
 
 </script>
+  </body>
