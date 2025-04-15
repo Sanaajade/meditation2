@@ -1,116 +1,110 @@
 <link rel="stylesheet" href="https://generativeart.online/css/drawing-app.css">
 
 <style> 
-  html{
- background-image: url("https://t3.ftcdn.net/jpg/04/99/36/46/360_F_499364641_008vkE13f9Ptk28N14GDXMyMr1dxLxUC.jpg");
-  background-size: cover;
-   background-attachment: fixed;
+  html {
+    background-image: url("https://t3.ftcdn.net/jpg/04/99/36/46/360_F_499364641_008vkE13f9Ptk28N14GDXMyMr1dxLxUC.jpg");
+    background-size: cover;
+    background-attachment: fixed;
     background-position: center;
-     background-repeat: no-repeat;
-}
-  
-  canvas {
-      border: 1px solid #333;
-      cursor: crosshair;
-      display: block;
-      margin-top: 10px;
-    }
+    background-repeat: no-repeat;
+  }
   
   .homelesscat {
     position: absolute;
     bottom: 40px;
-    right: 50px
+    right: 50px;
   }
   
   .speechbubble {
     position: absolute;
     bottom: 160px;
-    right: 150px
+    right: 150px;
   }
   
   .emoji-picker {
-      font-size: 30px;
-      cursor: pointer;
-    }
-    .emoji-picker span {
-      margin-right: 10px;
-      transition: transform 0.1s;
-    }
-    .emoji-picker span:hover {
-      transform: scale(1.3);
-    }
+    font-size: 30px;
+    cursor: pointer;
+  }
+  
+  .emoji-picker span {
+    margin-right: 10px;
+    transition: transform 0.1s;
+  }
+  
+  .emoji-picker span:hover {
+    transform: scale(1.3);
+  }
+  
+  /* Style for the emoji stamps that the user "draws" */
+  .emoji-stamp {
+    position: absolute;
+    font-size: 32px;
+    cursor: pointer;
+  }
 </style>
 
 <body>
-<img src="Adobe Express - file (6).png" alt="description of image"width=200 class='homelesscat'>
+  <img src="Adobe Express - file (6).png" alt="description of image" width="200" class="homelesscat">
+  <img src="Adobe Express - file (7).png" alt="description of image" width="300" class="speechbubble">
   
-<img src="Adobe Express - file (7).png" alt="description of image"width=300 class='speechbubble'>
-  
-<div class="house-material">
-  <span>🌸</span>
-  <span>🪨</span>
-  <span>🪵</span>
-  <span>💧</span>
+  <div class="emoji-picker">
+    <span>🌸</span>
+    <span>🪨</span>
+    <span>🪵</span>
+    <span>💧</span>
   </div>
-  
-<canvas id="canvas" width="800" height="600"></canvas>
 
+  <!-- The area where users will "draw" emojis -->
+  <div id="drawing-area" style="position: relative; width: 100%; height: 100vh; background-color: transparent;"></div>
 
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
 <script>
- /* global nn */
+  const emojiPicker = document.querySelector('.emoji-picker');
+  let currentEmoji = null;
+  let isDrawing = false;
 
-nn.on('mousedown', mousePressed)
-nn.on('mousemove', scatterEmoji)
-nn.on('mouseup', mouseReleased)
-
-    
-
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const emojis = document.querySelectorAll('.emoji-picker span');
-
-let currentEmoji = null;
-let isDrawing = false;
-  
-emojis.forEach(emoji => {
-  emoji.addEventListener('click', () => {
-    currentEmoji = emoji.textContent;
-    alert(`Now drawing with: ${currentEmoji}`);
+  // Set up event listeners for emoji picker
+  emojiPicker.addEventListener('click', (e) => {
+    if (e.target.tagName === 'SPAN') {
+      currentEmoji = e.target.textContent;
+      alert(`Now drawing with: ${currentEmoji}`);
+    }
   });
-});
-  
-canvas.addEventListener('mousedown', (e) => {
-  if (currentEmoji) {
-    isDrawing = true;
-    drawEmoji(e);
-  }
-});
-  
-  
-canvas.addEventListener('mouseup', () => {
-  isDrawing = false;
-});
-  
-  
-canvas.addEventListener('mousemove', (e) => {
-  if (isDrawing && currentEmoji) {
-    drawEmoji(e);
-  }
-});
-  
-  
-function drawEmoji(e) {
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  ctx.fillText(currentEmoji, x, y);
-}
-  
-  
-ctx.font = "32px serif";
-ctx.textBaseline = "middle";
 
+  // Get the drawing area
+  const drawingArea = document.getElementById('drawing-area');
 
+  // Mouse event to start drawing
+  drawingArea.addEventListener('mousedown', (e) => {
+    if (currentEmoji) {
+      isDrawing = true;
+      placeEmoji(e);
+    }
+  });
+
+  // Mouse event to stop drawing
+  drawingArea.addEventListener('mouseup', () => {
+    isDrawing = false;
+  });
+
+  // Mouse event to draw continuously
+  drawingArea.addEventListener('mousemove', (e) => {
+    if (isDrawing && currentEmoji) {
+      placeEmoji(e);
+    }
+  });
+
+  // Function to place the emoji stamp at the current mouse position
+  function placeEmoji(e) {
+    const emojiStamp = document.createElement('div');
+    emojiStamp.classList.add('emoji-stamp');
+    emojiStamp.textContent = currentEmoji;
+    
+    // Position the emoji at the mouse location
+    emojiStamp.style.left = `${e.pageX - 16}px`;  // Adjust for center positioning
+    emojiStamp.style.top = `${e.pageY - 16}px`;   // Adjust for center positioning
+    
+    // Append the emoji stamp to the drawing area
+    drawingArea.appendChild(emojiStamp);
+  }
 </script>
-  </body>
+</body>
