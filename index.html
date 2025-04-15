@@ -1,0 +1,21 @@
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<body></body>
+<script>
+/* global nn */
+function draw () {    
+  if (nn.mouseDown) {
+    const gif = nn.create('img')
+      .set({ src: 'cd.gif', draggable: false })
+      .css({ position: 'absolute' })
+      .addTo('body')
+
+    gif.css({
+      left: nn.mouseX - gif.width / 2,
+      top: nn.mouseY - gif.height / 2
+    })
+  }
+}
+
+nn.on('mousemove', draw)
+
+</script>
